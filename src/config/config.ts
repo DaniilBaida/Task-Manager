@@ -1,5 +1,6 @@
-import { config } from "dotenv";
+const config = {
+    NODE_ENV: process.env.NODE_ENV || "development",
+    PORT: parseInt(process.env.PORT || "3000"),
+};
 
-config();
-
-export const { PORT, NODE_ENV } = process.env;
+export default config;
