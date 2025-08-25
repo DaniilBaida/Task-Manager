@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id           String    @id @default(cuid())
+  user_id      String    @db.VarChar(36)
+  project_id   String?
+  name         String    @db.VarChar(50)
+  description  String?
+  due_date     DateTime? @db.Timestamp(6)
+  completed_on DateTime? @db.Timestamp(6)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  project      Project?  @relation(fields: [project_id], references: [id])
+
+  @@index([user_id])
+  @@map("tasks")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  user_id     String   @db.VarChar(36)
+  name        String   @db.VarChar(50)
+  description String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  tasks       Task[]
+
+  @@index([user_id])
+  @@map("projects")
+}
