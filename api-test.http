@@ -5,19 +5,24 @@ GET http://localhost:3000/health HTTP/1.1
 ### tasks
 
 GET http://localhost:3000/v1/tasks HTTP/1.1
+Authorization: Bearer <token>
 
 ###GET task by ID
 
 GET http://localhost:3000/v1/tasks/1 HTTP/1.1
+Authorization: Bearer <token>
 
 ###GET projects
 
 GET http://localhost:3000/v1/projects HTTP/1.1
+Authorization: Bearer <token>
 
 ###GET project by ID
 
 GET http://localhost:3000/v1/projects/1 HTTP/1.1
+Authorization: Bearer <token>
 
 ###GET project's tasks
 
 GET http://localhost:3000/v1/projects/1/tasks HTTP/1.1
+Authorization: Bearer <token>
