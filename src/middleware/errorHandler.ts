@@ -5,6 +5,8 @@ import config from "../config/config";
 import CustomError from "../errors/customError";
 import { UnauthorizedError } from "express-oauth2-jwt-bearer";
 import Joi from "joi";
+import { Prisma } from "../../generated/prisma";
+import PrismaError from "../errors/PrismaError";
 
 export const errorHandler = (
     error: unknown,
@@ -31,24 +33,13 @@ export const errorHandler = (
         return;
     }
 
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        error = new PrismaError(error);
+    }
+
     if (error instanceof CustomError) {
         res.status(error.statusCode).json({
             error: { message: error.message, code: error.code },
-        });
-        return;
-    }
-
-    if (
-        error &&
-        typeof error === "object" &&
-        "code" in error &&
-        error.code === "P2025"
-    ) {
-        res.status(404).json({
-            error: {
-                message: "Resource not found",
-                code: "ERR_NF",
-            },
         });
         return;
     }
