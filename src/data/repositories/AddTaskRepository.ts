@@ -1,6 +1,12 @@
 import { Prisma } from "@prisma/client";
 import BaseRepository, { Constructor } from "./BaseRepository";
-import { ITask, ITaskQueryParameters, ITaskRepository } from "./repository";
+import {
+    ITask,
+    ITaskCreatePayload,
+    ITaskQueryParameters,
+    ITaskRepository,
+    ITaskUpdatePayload,
+} from "./repository";
 import EntityNotFoundError from "@/errors/EntityNotFoundError";
 
 type PrismaTask = Prisma.TaskGetPayload<{}>;
@@ -50,7 +56,7 @@ export function AddTaskRepository<TBase extends Constructor<BaseRepository>>(
             return this.mapTask(task);
         }
         async createTask(
-            payload: Partial<ITask>,
+            payload: ITaskCreatePayload,
             userId: string
         ): Promise<ITask> {
             const task = await this.client.task.create({
@@ -64,7 +70,7 @@ export function AddTaskRepository<TBase extends Constructor<BaseRepository>>(
 
         async updateTask(
             id: string,
-            payload: Partial<ITask>,
+            payload: ITaskUpdatePayload,
             userId: string
         ): Promise<ITask> {
             const task = await this.client.task.update({

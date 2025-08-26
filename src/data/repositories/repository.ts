@@ -8,6 +8,14 @@ export interface ITask {
     completed_on: Date | null;
     created_at: Date;
 }
+export interface ITaskCreatePayload {
+    project_id: string | null;
+    name: string;
+    description: string | null;
+    due_date: Date | null;
+    completed_on: Date | null;
+}
+export type ITaskUpdatePayload = Partial<ITaskCreatePayload>;
 
 export interface IProject {
     id: string;
