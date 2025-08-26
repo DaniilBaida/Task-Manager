@@ -5,7 +5,7 @@ import config from "@/config/config";
 import CustomError from "@/errors/customError";
 import { UnauthorizedError } from "express-oauth2-jwt-bearer";
 import Joi from "joi";
-import { Prisma } from "../../generated/prisma";
+import { Prisma } from "@prisma/client";
 import PrismaError from "@/errors/PrismaError";
 
 export const errorHandler = (

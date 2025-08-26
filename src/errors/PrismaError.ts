@@ -1,4 +1,4 @@
-import { Prisma } from "../../generated/prisma";
+import { Prisma } from "@prisma/client";
 import CustomError from "@/errors/customError";
 
 class PrismaError extends CustomError<ErrorCode> {
