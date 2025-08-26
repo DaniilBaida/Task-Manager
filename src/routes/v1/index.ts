@@ -1,6 +1,6 @@
 import { Router } from "express";
-import tasks from "./tasks";
-import projects from "./projects";
+import tasks from "@/routes/v1/tasks";
+import projects from "@/routes/v1/projects";
 
 const v1: Router = Router();
 

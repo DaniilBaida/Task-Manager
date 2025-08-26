@@ -1,4 +1,4 @@
-import CustomError from "./customError";
+import CustomError from "@/errors/customError";
 
 class AuthenticationError extends CustomError<ErrorCode> {}
 

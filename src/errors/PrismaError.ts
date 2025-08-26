@@ -1,5 +1,5 @@
 import { Prisma } from "../../generated/prisma";
-import CustomError from "./customError";
+import CustomError from "@/errors/customError";
 
 class PrismaError extends CustomError<ErrorCode> {
     constructor(error: Prisma.PrismaClientKnownRequestError) {

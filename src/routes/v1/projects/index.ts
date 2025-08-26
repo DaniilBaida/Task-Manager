@@ -5,13 +5,13 @@ import {
     getAllProjectTasks,
     getProject,
     updateProject,
-} from "./controller";
-import authenticateUser from "../../../middleware/authenticate-user";
-import validateRequest from "../../../middleware/validate-request";
+} from "@/routes/v1/projects/controller";
+import authenticateUser from "@/middleware/authenticate-user";
+import validateRequest from "@/middleware/validate-request";
 import {
     createProjectSchema,
     updateProjectSchema,
-} from "../../../data/request-schemas";
+} from "@/data/request-schemas";
 
 const projects: Router = Router();
 

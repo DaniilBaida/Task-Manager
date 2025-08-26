@@ -4,9 +4,10 @@
         "outDir": "./dist",
         "rootDir": "./src",
         "forceConsistentCasingInFileNames": true,
-        "isolatedModules": true
+        "isolatedModules": true,
+        "baseUrl": ".",
+        "paths": { "@/*": ["src/*"] }
     },
     "include": ["src/**/*"],
-    "exclude": ["node_modules", "dist"],
-    "ts-node": { "files": true }
+    "exclude": ["node_modules", "dist"]
 }

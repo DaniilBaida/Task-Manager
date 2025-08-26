@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
-import prisma from "../../../prisma-client";
-import EntityNotFoundError from "../../../errors/EntityNotFoundError";
+import { Request, Response } from "express";
+import prisma from "@/prisma-client";
+import EntityNotFoundError from "@/errors/EntityNotFoundError";
 
 export const getAllTasks = async (req: Request, res: Response) => {
     const tasks = await prisma.task.findMany({

@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 
-import { getErrorMessage } from "../utils";
-import config from "../config/config";
-import CustomError from "../errors/customError";
+import { getErrorMessage } from "@/utils";
+import config from "@/config/config";
+import CustomError from "@/errors/customError";
 import { UnauthorizedError } from "express-oauth2-jwt-bearer";
 import Joi from "joi";
 import { Prisma } from "../../generated/prisma";
-import PrismaError from "../errors/PrismaError";
+import PrismaError from "@/errors/PrismaError";
 
 export const errorHandler = (
     error: unknown,

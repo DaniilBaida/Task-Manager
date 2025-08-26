@@ -1,5 +1,7 @@
-import config from "./config/config";
-import { createServer } from "./server";
+import "module-alias/register";
+
+import config from "@/config/config";
+import { createServer } from "@/server";
 
 const server = createServer();
 

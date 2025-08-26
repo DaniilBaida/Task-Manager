@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { createTask, getAllTasks, getTask, updateTask } from "./controller";
-import authenticateUser from "../../../middleware/authenticate-user";
-import validateRequest from "../../../middleware/validate-request";
 import {
-    createTaskSchema,
-    updateTaskSchema,
-} from "../../../data/request-schemas";
+    createTask,
+    getAllTasks,
+    getTask,
+    updateTask,
+} from "@/routes/v1/tasks/controller";
+import authenticateUser from "@/middleware/authenticate-user";
+import validateRequest from "@/middleware/validate-request";
+import { createTaskSchema, updateTaskSchema } from "@/data/request-schemas";
 
 const tasks: Router = Router();
 
