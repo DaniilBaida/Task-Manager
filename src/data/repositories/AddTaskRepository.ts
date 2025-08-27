@@ -32,11 +32,14 @@ export function AddTaskRepository<TBase extends Constructor<BaseRepository>>(
             userId: string
         ): Promise<ITask[]> {
             const tasks = await this.client.task.findMany({
-                where: { user_id: userId, project_id: query.projectId },
+                where: {
+                    user_id: userId,
+                    project_id: query.projectId,
+                },
                 take: query.limit || this.defaultLimit,
                 skip: query.offset || this.defaultOffset,
             });
-            return tasks.map((item) => this.mapTask(item));
+            return tasks.map((task) => this.mapTask(task));
         }
 
         async getTask(id: string, userId: string): Promise<ITask> {

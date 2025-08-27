@@ -1,73 +1,46 @@
+import { repository } from "@/data/repositories";
 import { Request, Response } from "express";
-import prisma from "@/prisma-client";
-import EntityNotFoundError from "@/errors/EntityNotFoundError";
 
 export const getAllProjects = async (req: Request, res: Response) => {
-    const projects = await prisma.project.findMany({
-        where: { user_id: req.auth?.payload.sub },
-    });
-
+    const projects = await repository.getAllProjects(
+        {},
+        req.auth!.payload.sub!
+    );
     res.status(200).json({ projects });
 };
 
 export const getProject = async (req: Request, res: Response) => {
-    const project = await prisma.project.findUnique({
-        where: {
-            id: req.params.id,
-            user_id: req.auth?.payload.sub,
-        },
-    });
-
-    if (!project) {
-        throw new EntityNotFoundError({
-            message: "Project not found",
-            statusCode: 404,
-            code: "ERR_NF",
-        });
-    }
+    const project = await repository.getProject(
+        req.params.id,
+        req.auth!.payload.sub!
+    );
     res.status(200).json({ project });
 };
 
 export const getAllProjectTasks = async (req: Request, res: Response) => {
-    const project = await prisma.project.findUnique({
-        where: {
-            id: req.params.id,
-            user_id: req.auth?.payload.sub,
-        },
-        include: {
-            tasks: true,
-        },
-    });
+    const tasks = await repository.getAllTasks(
+        { projectId: req.params.id },
+        req.auth!.payload.sub!
+    );
 
-    if (!project) {
-        throw new EntityNotFoundError({
-            message: "Project not found",
-            statusCode: 404,
-            code: "ERR_NF",
-        });
-    }
-
-    res.status(200).json({ tasks: project.tasks });
+    res.status(200).json({ tasks });
 };
 
 export const createProject = async (req: Request, res: Response) => {
-    const project = await prisma.project.create({
-        data: {
-            user_id: req.auth?.payload.sub as string,
-            ...req.body,
-        },
-    });
+    const project = await repository.createProject(
+        req.body,
+        req.params.id,
+        req.auth!.payload.sub!
+    );
     res.status(201).json({ project });
 };
 
 export const updateProject = async (req: Request, res: Response) => {
-    const project = await prisma.project.update({
-        where: {
-            id: req.params.id,
-            user_id: req.auth?.payload.sub,
-        },
-        data: { ...req.body },
-    });
+    const project = await repository.updateProject(
+        req.params.id,
+        req.body,
+        req.auth!.payload.sub!
+    );
 
     res.status(200).json({ project });
 };

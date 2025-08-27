@@ -25,6 +25,14 @@ export interface IProject {
     created_at: Date;
 }
 
+export interface IProjectCreatePayload {
+    name: string;
+    description: string | null;
+    created_at: Date;
+}
+
+export type IProjectUpdatePayload = Partial<IProjectCreatePayload>;
+
 interface IQueryParameters {
     limit?: number;
     offset?: number;
@@ -39,10 +47,10 @@ export interface IProjectQueryParameters extends IQueryParameters {}
 export interface ITaskRepository {
     getAllTasks(query: ITaskQueryParameters, userId: string): Promise<ITask[]>;
     getTask(id: string, userId: string): Promise<ITask>;
-    createTask(payload: Partial<ITask>, userId: string): Promise<ITask>;
+    createTask(payload: ITaskCreatePayload, userId: string): Promise<ITask>;
     updateTask(
         id: string,
-        payload: Partial<ITask>,
+        payload: ITaskUpdatePayload,
         userId: string
     ): Promise<ITask>;
 }
@@ -53,15 +61,14 @@ export interface IProjectRepository {
         userId: string
     ): Promise<IProject[]>;
     getProject(id: string, userId: string): Promise<IProject>;
-    getAllProjectTasks(id: string, userId: string): Promise<ITask>;
     createProject(
-        payload: Partial<IProject>,
+        payload: IProjectCreatePayload,
         id: string,
         userId: string
     ): Promise<IProject>;
     updateProject(
         id: string,
-        payload: Partial<IProject>,
+        payload: IProjectUpdatePayload,
         userId: string
     ): Promise<IProject>;
 }
