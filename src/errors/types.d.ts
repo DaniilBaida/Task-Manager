@@ -10,5 +10,9 @@ type ErrorCode =
     | "ERR_DB";
 
 type ValidationError = {
-    error: { message: string; code: ErrorCode; errors: { message: string }[] };
+    error: {
+        message: string;
+        code: ErrorCode;
+        errors: { message: string }[];
+    };
 };

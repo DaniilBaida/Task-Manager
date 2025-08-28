@@ -4,9 +4,9 @@ import { getErrorMessage } from "@/utils";
 import config from "@/config/config";
 import CustomError from "@/errors/customError";
 import { UnauthorizedError } from "express-oauth2-jwt-bearer";
-import Joi from "joi";
 import { Prisma } from "@prisma/client";
 import PrismaError from "@/errors/PrismaError";
+import z from "zod";
 
 export const errorHandler = (
     error: unknown,
@@ -19,17 +19,17 @@ export const errorHandler = (
         return;
     }
 
-    if (Joi.isError(error)) {
+    if (error instanceof z.ZodError) {
         const validationError: ValidationError = {
             error: {
                 message: "Validation Error",
                 code: "ERR_VALID",
-                errors: error.details.map((item) => ({
-                    message: item.message,
+                errors: error.issues.map((err) => ({
+                    message: err.message,
                 })),
             },
         };
-        res.status(422).json(validationError);
+        res.status(400).json(validationError);
         return;
     }
 

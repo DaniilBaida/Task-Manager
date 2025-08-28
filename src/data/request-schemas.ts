@@ -1,89 +1,78 @@
-import Joi from "joi";
+import { z } from "zod";
 
-const taskSchema = {
-    project_id: Joi.string().allow(null).optional().empty(null).messages({
-        "string.base": "Project ID must be a string",
-    }),
-    name: Joi.string().min(1).max(255).required().messages({
-        "string.base": "Task name must be a string.",
-        "string.empty": "Task name cannot be empty.",
-        "string.min": "Task name must be at least 1 character long.",
-        "string.max": "Task name must not exceed 255 characters.",
-        "any.required": "Task name is required.",
-    }),
-    description: Joi.string()
-        .allow(null)
-        .optional()
-        .max(1000)
-        .empty("")
-        .messages({
-            "string.base": "Description must be a string.",
-            "string.max": "Description must not exceed 1000 characters.",
-        }),
-    due_date: Joi.date()
-        .iso()
-        .greater("now")
-        .allow(null)
-        .optional()
-        .empty(null)
-        .messages({
-            "date.base": "Due date must be a valid date.",
-            "date.format": "Due date must be in ISO 8601 format.",
-            "date.greater": "Due date must be in the future.",
-        }),
-    completed_on: Joi.date()
-        .iso()
-        .max("now")
-        .allow(null)
-        .optional()
-        .empty(null)
-        .messages({
-            "date.base": "Completed on date must be a valid date or null.",
-            "date.format": "Completed on date must be in ISO 8601 format.",
-            "date.max": "Completed on date must be in the past.",
-        }),
-};
+const taskSchema = z.object({
+    project_id: z
+        .string({ message: "Project ID must be a string." })
+        .min(1, "Project ID cannot be empty.")
+        .nullable()
+        .optional(),
+    name: z
+        .string({ message: "Task name must be a string." })
+        .min(1, "Task name cannot be empty.")
+        .max(255, "Task name must not exceed 255 characters."),
+    description: z
+        .string({ message: "Description must be a string." })
+        .min(1, "Description cannot be empty when provided.")
+        .max(1000, "Description must not exceed 1000 characters.")
+        .nullable()
+        .optional(),
+    due_date: z
+        .date({ message: "Due date must be a valid date." })
+        .refine((date: Date) => date > new Date(), {
+            message: "Due date must be in the future.",
+        })
+        .nullable()
+        .optional(),
+    completed_on: z
+        .date({ message: "Completed date must be a valid date." })
+        .refine((date: Date) => date <= new Date(), {
+            message: "Completed date cannot be in the future.",
+        })
+        .nullable()
+        .optional(),
+});
 
-export const createTaskSchema = Joi.object(taskSchema);
+export const createTaskSchema = taskSchema;
 
-export const updateTaskSchema = Joi.object({
-    ...taskSchema,
-    name: Joi.string().min(1).max(255).optional().messages({
-        "string.base": "Task name must be a string.",
-        "string.empty": "Task name cannot be empty.",
-        "string.min": "Task name must be at least 1 character long.",
-        "string.max": "Task name must not exceed 255 characters.",
-    }),
-}).or("project_id", "name", "description", "due_date", "completed_on");
+export const updateTaskSchema = taskSchema.partial().refine(
+    (data) => {
+        const allowedFields = [
+            "project_id",
+            "name",
+            "description",
+            "due_date",
+            "completed_on",
+        ];
+        return Object.keys(data).some((key) => allowedFields.includes(key));
+    },
+    {
+        message:
+            "At least one field must be provided for update. Valid fields: project_id, name, description, due_date, completed_on.",
+    }
+);
 
-const projectSchema = {
-    name: Joi.string().min(1).max(50).required().messages({
-        "string.base": "Project name must be a string.",
-        "string.empty": "Project name cannot be empty.",
-        "string.min": "Project name must be at least 1 character long.",
-        "string.max": "Project name must not exceed 50 characters.",
-        "any.required": "Project name is required.",
-    }),
+const projectSchema = z.object({
+    name: z
+        .string({ message: "Project name must be a string." })
+        .min(1, "Project name cannot be empty.")
+        .max(50, "Project name must not exceed 50 characters."),
+    description: z
+        .string({ message: "Description must be a string." })
+        .min(1, "Description cannot be empty when provided.")
+        .max(1000, "Description must not exceed 1000 characters.")
+        .nullable()
+        .optional(),
+});
 
-    description: Joi.string()
-        .allow(null)
-        .optional()
-        .max(1000)
-        .empty("")
-        .messages({
-            "string.base": "Description must be a string.",
-            "string.max": "Description must not exceed 1000 characters.",
-        }),
-};
+export const createProjectSchema = projectSchema;
 
-export const createProjectSchema = Joi.object(projectSchema);
-
-export const updateProjectSchema = Joi.object({
-    ...projectSchema,
-    name: Joi.string().min(1).max(50).optional().messages({
-        "string.base": "Project name must be a string.",
-        "string.empty": "Project name cannot be empty.",
-        "string.min": "Project name must be at least 1 character long.",
-        "string.max": "Project name must not exceed 50 characters.",
-    }),
-}).or("name", "description");
+export const updateProjectSchema = projectSchema.partial().refine(
+    (data) => {
+        const allowedFields = ["name", "description"];
+        return Object.keys(data).some((key) => allowedFields.includes(key));
+    },
+    {
+        message:
+            "At least one field must be provided for update. Valid fields: name, description.",
+    }
+);
