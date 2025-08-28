@@ -1,3 +1,6 @@
+import { Request } from "express";
+import config from "./config/config";
+
 export function add(a: number, b: number) {
     return a + b;
 }
@@ -16,4 +19,18 @@ export function getErrorMessage(error: unknown): string {
     }
 
     return "An error ocurred";
+}
+
+export function getPaginationParameters(req: Request) {
+    const page = parseInt(req.query.page as string, 10);
+    const perPage = parseInt(req.query.perPage as string, 10);
+
+    const validPage = isNaN(page) || page < 1 ? 1 : page;
+    const validPerPage =
+        isNaN(perPage) || perPage < 1 ? config.DEFAULT_PAGE_SIZE : perPage;
+
+    const limit = validPerPage;
+    const offset = (validPage - 1) * validPerPage;
+
+    return { page: validPage, perPage: validPerPage, limit, offset };
 }

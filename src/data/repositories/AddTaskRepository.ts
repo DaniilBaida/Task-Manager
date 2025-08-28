@@ -4,6 +4,7 @@ import {
     ITask,
     ITaskCreatePayload,
     ITaskQueryParameters,
+    ITaskQueryResult,
     ITaskRepository,
     ITaskUpdatePayload,
 } from "./types";
@@ -30,16 +31,20 @@ export function AddTaskRepository<TBase extends Constructor<BaseRepository>>(
         async getAllTasks(
             query: ITaskQueryParameters,
             userId: string
-        ): Promise<ITask[]> {
-            const tasks = await this.client.task.findMany({
-                where: {
-                    user_id: userId,
-                    project_id: query.projectId,
-                },
-                take: query.limit || this.defaultLimit,
-                skip: query.offset || this.defaultOffset,
-            });
-            return tasks.map((task) => this.mapTask(task));
+        ): Promise<ITaskQueryResult> {
+            const where = { user_id: userId, project_id: query.projectId };
+            const [tasks, count] = await this.client.$transaction([
+                this.client.task.findMany({
+                    where,
+                    take: query.limit || this.defaultLimit,
+                    skip: query.offset || this.defaultOffset,
+                }),
+                this.client.task.count({ where }),
+            ]);
+            return {
+                tasks: tasks.map((task) => this.mapTask(task)),
+                totalCount: count,
+            };
         }
 
         async getTask(id: string, userId: string): Promise<ITask> {

@@ -6,6 +6,7 @@ const config = {
     APP_SECRET: process.env.APP_SECRET || "",
     ISSUER_BASE_URL: process.env.ISSUER_BASE_URL || "",
     AUDIENCE: process.env.AUDIENCE || "",
+    DEFAULT_PAGE_SIZE: parseInt(process.env.DEFAULT_PAGE_SIZE || "5"),
 };
 
 export default config;

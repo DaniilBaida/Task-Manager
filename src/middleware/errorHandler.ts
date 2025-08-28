@@ -33,10 +33,6 @@ export const errorHandler = (
         return;
     }
 
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        error = new PrismaError(error);
-    }
-
     if (error instanceof CustomError) {
         res.status(error.statusCode).json({
             error: { message: error.message, code: error.code },

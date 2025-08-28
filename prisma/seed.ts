@@ -1,8 +1,8 @@
-import { PrismaClient } from "../generated/prisma";
+import { PrismaClient } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 const prisma = new PrismaClient();
 
-const userIds = ["google-oauth2|108055676458653095264"];
+const userIds = ["y7g4iS5HkjDRkYLpcLvGH1CBb72IlS73@clients"];
 
 const capitalize = (word: string): string => {
     return word.charAt(0).toUpperCase() + word.slice(1);

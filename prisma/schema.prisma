@@ -10,7 +10,7 @@ datasource db {
 
 model Task {
   id           String    @id @default(cuid())
-  user_id      String    @db.VarChar(36)
+  user_id      String
   project_id   String?
   name         String    @db.VarChar(50)
   description  String?
@@ -26,7 +26,7 @@ model Task {
 
 model Project {
   id          String   @id @default(cuid())
-  user_id     String   @db.VarChar(36)
+  user_id     String
   name        String   @db.VarChar(50)
   description String?
   created_at  DateTime @default(now())
