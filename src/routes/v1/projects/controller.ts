@@ -1,11 +1,17 @@
 import { repository } from "@/data/repositories";
-import { encodeBase64, getPaginationParameters } from "@/utils";
+import {
+    encodeBase64,
+    getPaginationParameters,
+    parseProjectQueryParameters,
+} from "@/utils";
 import { Request, Response } from "express";
 
 export const getAllProjects = async (req: Request, res: Response) => {
     const { limit, nextCursor, prevCursor } = getPaginationParameters(req);
+    const queryParameters = parseProjectQueryParameters(req);
+
     const result = await repository.getAllProjects(
-        { limit, nextCursor, prevCursor },
+        { limit, nextCursor, prevCursor, ...queryParameters },
         req.auth!.payload.sub!
     );
     res.status(200).json({

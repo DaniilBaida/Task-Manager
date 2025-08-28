@@ -1,5 +1,9 @@
 import { Request } from "express";
 import config from "./config/config";
+import {
+    IProjectQueryParameters,
+    ITaskQueryParameters,
+} from "./data/repositories/types";
 
 export function add(a: number, b: number) {
     return a + b;
@@ -42,4 +46,51 @@ export function encodeBase64(input: string) {
 
 export function decodeBase64(input: string) {
     return Buffer.from(input, "base64").toString("utf-8");
+}
+
+export function parseTaskQueryParameters(req: Request): ITaskQueryParameters {
+    const {
+        search,
+        completed: completedParam,
+        orderBy: orderByParam,
+    } = req.query;
+
+    let completed: boolean | undefined = undefined;
+    if (completedParam !== undefined) {
+        const value = String(completedParam).toLowerCase();
+        completed = ["true", "1"].includes(value)
+            ? true
+            : ["false", "0"].includes(value)
+              ? false
+              : undefined;
+    }
+
+    let orderBy: ITaskQueryParameters["orderBy"] = { created_at: "asc" };
+    if (typeof orderByParam === "string") {
+        const [field, direction] = orderByParam.split("_");
+        if (
+            ["created_at", "due_date"].includes(field) &&
+            ["asc", "desc"].includes(direction)
+        ) {
+            orderBy = { [field]: direction as "asc" | "desc" };
+        }
+    }
+
+    return { search: search as string | undefined, completed, orderBy };
+}
+
+export function parseProjectQueryParameters(
+    req: Request
+): IProjectQueryParameters {
+    const { search, orderBy: orderByParam } = req.query;
+
+    let orderBy: IProjectQueryParameters["orderBy"] = { created_at: "asc" };
+    if (typeof orderByParam === "string") {
+        const [field, direction] = orderByParam.split("_");
+        if (field === "created_at" && ["asc", "desc"].includes(direction)) {
+            orderBy = { created_at: direction as "asc" | "desc" };
+        }
+    }
+
+    return { search: search as string | undefined, orderBy };
 }

@@ -35,15 +35,17 @@ export function AddProjectRepository<TBase extends Constructor<BaseRepository>>(
             const { limit, sortOrder, operator, cursor } =
                 this.getPaginationQueryParameters(query);
 
-            const where = {
+            const where: Prisma.ProjectWhereInput = {
                 user_id: userId,
                 created_at: { [operator]: cursor },
+                name: { contains: query.search, mode: "insensitive" },
             };
 
             const projects = await this.client.project.findMany({
                 where,
                 take: limit + 1,
-                orderBy: { created_at: sortOrder },
+                orderBy:
+                    query.orderBy as Prisma.ProjectOrderByWithRelationInput,
             });
 
             const { nextCursorTimestamp, prevCursorTimestamp } =

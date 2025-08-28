@@ -35,16 +35,21 @@ export function AddTaskRepository<TBase extends Constructor<BaseRepository>>(
             const { limit, sortOrder, operator, cursor } =
                 this.getPaginationQueryParameters(query);
 
-            const where = {
+            const where: Prisma.TaskWhereInput = {
                 user_id: userId,
                 project_id: query.projectId,
                 created_at: { [operator]: cursor },
+                name: { contains: query.search, mode: "insensitive" },
             };
+
+            if (query.completed !== undefined) {
+                where.completed_on = query.completed ? { not: null } : null;
+            }
 
             const tasks = await this.client.task.findMany({
                 where,
                 take: limit + 1,
-                orderBy: { created_at: sortOrder },
+                orderBy: query.orderBy as Prisma.TaskOrderByWithRelationInput,
             });
 
             const { nextCursorTimestamp, prevCursorTimestamp } =

@@ -1,11 +1,17 @@
 import { repository } from "@/data/repositories";
-import { encodeBase64, getPaginationParameters } from "@/utils";
+import {
+    encodeBase64,
+    getPaginationParameters,
+    parseTaskQueryParameters,
+} from "@/utils";
 import { Request, Response } from "express";
 
 export const getAllTasks = async (req: Request, res: Response) => {
     const { limit, nextCursor, prevCursor } = getPaginationParameters(req);
+    const queryParameters = parseTaskQueryParameters(req);
+
     const result = await repository.getAllTasks(
-        { limit, nextCursor, prevCursor },
+        { limit, nextCursor, prevCursor, ...queryParameters },
         req.auth!.payload.sub!
     );
     res.status(200).json({
