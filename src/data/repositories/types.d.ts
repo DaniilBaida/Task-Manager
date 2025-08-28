@@ -35,7 +35,8 @@ export type IProjectUpdatePayload = Partial<IProjectCreatePayload>;
 
 interface IQueryParameters {
     limit?: number;
-    offset?: number;
+    nextCursor?: string;
+    prevCursor?: string;
 }
 
 export interface ITaskQueryParameters extends IQueryParameters {
@@ -44,14 +45,16 @@ export interface ITaskQueryParameters extends IQueryParameters {
 
 export interface ITaskQueryResult {
     tasks: ITask[];
-    totalCount: number;
+    nextCursor: Date | null;
+    prevCursor: Date | null;
 }
 
 export interface IProjectQueryParameters extends IQueryParameters {}
 
 export interface IProjectQueryResult {
     projects: IProject[];
-    totalCount: number;
+    nextCursor: Date | null;
+    prevCursor: Date | null;
 }
 
 export interface ITaskRepository {

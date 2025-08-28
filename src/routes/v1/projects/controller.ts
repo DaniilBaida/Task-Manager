@@ -1,19 +1,21 @@
 import { repository } from "@/data/repositories";
-import { getPaginationParameters } from "@/utils";
+import { encodeBase64, getPaginationParameters } from "@/utils";
 import { Request, Response } from "express";
 
 export const getAllProjects = async (req: Request, res: Response) => {
-    const { page, perPage, limit, offset } = getPaginationParameters(req);
+    const { limit, nextCursor, prevCursor } = getPaginationParameters(req);
     const result = await repository.getAllProjects(
-        { limit, offset },
+        { limit, nextCursor, prevCursor },
         req.auth!.payload.sub!
     );
     res.status(200).json({
         projects: result.projects,
-        page,
-        per_page: perPage,
-        total_pages: Math.ceil(result.totalCount / perPage),
-        total_count: result.totalCount,
+        nextCursor: result.nextCursor
+            ? encodeBase64(result.nextCursor.toISOString())
+            : null,
+        prevCursor: result.prevCursor
+            ? encodeBase64(result.prevCursor.toISOString())
+            : null,
     });
 };
 
@@ -26,18 +28,20 @@ export const getProject = async (req: Request, res: Response) => {
 };
 
 export const getAllProjectTasks = async (req: Request, res: Response) => {
-    const { page, perPage, limit, offset } = getPaginationParameters(req);
+    const { limit, nextCursor, prevCursor } = getPaginationParameters(req);
     const result = await repository.getAllTasks(
-        { projectId: req.params.id, limit, offset },
+        { projectId: req.params.id, limit, nextCursor, prevCursor },
         req.auth!.payload.sub!
     );
 
     res.status(200).json({
         tasks: result.tasks,
-        page,
-        perPage,
-        total_pages: Math.ceil(result.totalCount / perPage),
-        total_count: result.totalCount,
+        nextCursor: result.nextCursor
+            ? encodeBase64(result.nextCursor.toISOString())
+            : null,
+        prevCursor: result.prevCursor
+            ? encodeBase64(result.prevCursor.toISOString())
+            : null,
     });
 };
 

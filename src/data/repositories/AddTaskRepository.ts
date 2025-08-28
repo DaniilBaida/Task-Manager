@@ -32,18 +32,30 @@ export function AddTaskRepository<TBase extends Constructor<BaseRepository>>(
             query: ITaskQueryParameters,
             userId: string
         ): Promise<ITaskQueryResult> {
-            const where = { user_id: userId, project_id: query.projectId };
-            const [tasks, count] = await this.client.$transaction([
-                this.client.task.findMany({
-                    where,
-                    take: query.limit || this.defaultLimit,
-                    skip: query.offset || this.defaultOffset,
-                }),
-                this.client.task.count({ where }),
-            ]);
+            const { limit, sortOrder, operator, cursor } =
+                this.getPaginationQueryParameters(query);
+
+            const where = {
+                user_id: userId,
+                project_id: query.projectId,
+                created_at: { [operator]: cursor },
+            };
+
+            const tasks = await this.client.task.findMany({
+                where,
+                take: limit + 1,
+                orderBy: { created_at: sortOrder },
+            });
+
+            const { nextCursorTimestamp, prevCursorTimestamp } =
+                this.getPaginationCursors(query, tasks, limit, sortOrder);
+
+            if (sortOrder === "desc") tasks.reverse();
+
             return {
                 tasks: tasks.map((task) => this.mapTask(task)),
-                totalCount: count,
+                nextCursor: nextCursorTimestamp,
+                prevCursor: prevCursorTimestamp,
             };
         }
 

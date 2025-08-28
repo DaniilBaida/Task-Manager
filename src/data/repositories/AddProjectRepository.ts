@@ -7,7 +7,6 @@ import {
     IProjectQueryResult,
     IProjectRepository,
     IProjectUpdatePayload,
-    ITask,
 } from "./types";
 import EntityNotFoundError from "@/errors/EntityNotFoundError";
 
@@ -33,19 +32,29 @@ export function AddProjectRepository<TBase extends Constructor<BaseRepository>>(
             query: IProjectQueryParameters,
             userId: string
         ): Promise<IProjectQueryResult> {
-            const where = { user_id: userId };
-            const [projects, count] = await this.client.$transaction([
-                this.client.project.findMany({
-                    where,
-                    take: query.limit || this.defaultLimit,
-                    skip: query.offset || this.defaultOffset,
-                }),
-                this.client.project.count({ where }),
-            ]);
+            const { limit, sortOrder, operator, cursor } =
+                this.getPaginationQueryParameters(query);
+
+            const where = {
+                user_id: userId,
+                created_at: { [operator]: cursor },
+            };
+
+            const projects = await this.client.project.findMany({
+                where,
+                take: limit + 1,
+                orderBy: { created_at: sortOrder },
+            });
+
+            const { nextCursorTimestamp, prevCursorTimestamp } =
+                this.getPaginationCursors(query, projects, limit, sortOrder);
+
+            if (sortOrder === "desc") projects.reverse();
 
             return {
                 projects: projects.map((project) => this.mapProject(project)),
-                totalCount: count,
+                nextCursor: nextCursorTimestamp,
+                prevCursor: prevCursorTimestamp,
             };
         }
         async getProject(id: string, userId: string): Promise<IProject> {
