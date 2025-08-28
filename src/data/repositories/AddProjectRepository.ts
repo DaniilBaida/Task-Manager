@@ -6,7 +6,7 @@ import {
     IProjectQueryParameters,
     IProjectRepository,
     ITask,
-} from "./repository";
+} from "./types";
 import EntityNotFoundError from "@/errors/EntityNotFoundError";
 
 type PrismaProject = Prisma.ProjectGetPayload<{}>;

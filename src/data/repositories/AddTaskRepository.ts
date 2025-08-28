@@ -6,7 +6,7 @@ import {
     ITaskQueryParameters,
     ITaskRepository,
     ITaskUpdatePayload,
-} from "./repository";
+} from "./types";
 import EntityNotFoundError from "@/errors/EntityNotFoundError";
 
 type PrismaTask = Prisma.TaskGetPayload<{}>;
