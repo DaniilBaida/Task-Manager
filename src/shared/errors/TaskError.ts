@@ -1,21 +1,12 @@
 import CustomError from "./customError";
-import EntityNotFoundError from "./EntityNotFoundError";
 import { ErrorCode } from "./types";
 
 class TaskError extends CustomError<ErrorCode> {
     static alreadyCompleted(taskName: string, completedDate: Date): TaskError {
         return new TaskError({
-            message: `Task '${taskName}' is already completed on ${completedDate.toDateString()}`,
-            statusCode: 409,
+            message: `Task "${taskName}" was already completed on ${completedDate.toDateString()}`,
+            statusCode: 400,
             code: "TASK_ALREADY_COMPLETED",
-        });
-    }
-
-    static notFound(taskId: string): EntityNotFoundError {
-        return new EntityNotFoundError({
-            message: `Task with ID '${taskId}' not found`,
-            statusCode: 404,
-            code: "ERR_NF",
         });
     }
 }

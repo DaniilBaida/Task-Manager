@@ -73,7 +73,11 @@ export function TaskRepository<TBase extends Constructor<BaseRepository>>(
                 },
             });
             if (!task) {
-                throw TaskError.notFound(id);
+                throw new EntityNotFoundError({
+                    message: `Task with ID '${id}' not found`,
+                    statusCode: 404,
+                    code: "ERR_NF",
+                });
             }
             return this.mapTask(task);
         }
@@ -103,7 +107,11 @@ export function TaskRepository<TBase extends Constructor<BaseRepository>>(
             });
 
             if (!existingTask) {
-                throw TaskError.notFound(id);
+                throw new EntityNotFoundError({
+                    message: `Task with ID '${id}' not found`,
+                    statusCode: 404,
+                    code: "ERR_NF",
+                });
             }
 
             const task = await this.client.task.update({
