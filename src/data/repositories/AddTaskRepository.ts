@@ -9,6 +9,7 @@ import {
     ITaskUpdatePayload,
 } from "./types";
 import EntityNotFoundError from "@/errors/EntityNotFoundError";
+import TaskError from "@/errors/TaskError";
 
 type PrismaTask = Prisma.TaskGetPayload<{}>;
 
@@ -72,11 +73,7 @@ export function AddTaskRepository<TBase extends Constructor<BaseRepository>>(
                 },
             });
             if (!task) {
-                throw new EntityNotFoundError({
-                    message: "Task not found",
-                    statusCode: 404,
-                    code: "ERR_NF",
-                });
+                throw TaskError.notFound(id);
             }
             return this.mapTask(task);
         }

@@ -7,7 +7,8 @@ type ErrorCode =
     | "ERR_CONSTRAINT"
     | "ERR_REQUIRED_RELATION"
     | "ERR_INVALID_OP"
-    | "ERR_DB";
+    | "ERR_DB"
+    | "TASK_ALREADY_COMPLETED";
 
 type ValidationError = {
     error: {

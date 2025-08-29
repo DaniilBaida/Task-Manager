@@ -4,6 +4,7 @@ import {
     getAllTasks,
     getTask,
     updateTask,
+    markTaskAsCompleted,
 } from "@/routes/v1/tasks/controller";
 import authenticateUser from "@/middleware/authenticate-user";
 import validateRequest from "@/middleware/validate-request";
@@ -17,5 +18,6 @@ tasks.get("/", getAllTasks);
 tasks.get("/:id", getTask);
 tasks.post("/", validateRequest(createTaskSchema), createTask);
 tasks.put("/:id", validateRequest(updateTaskSchema), updateTask);
+tasks.patch("/:id/complete", markTaskAsCompleted);
 
 export default tasks;

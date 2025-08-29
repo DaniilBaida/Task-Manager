@@ -1,3 +1,4 @@
+import { Task } from "@/data/Entities/Task";
 import { repository } from "@/data/repositories";
 import { mailer } from "@/services/mailer";
 import { CreateTaskUseCase } from "@/use-cases/CreateTaskUseCase";
@@ -16,8 +17,11 @@ export const getAllTasks = async (req: Request, res: Response) => {
         { limit, nextCursor, prevCursor, ...queryParameters },
         req.auth!.payload.sub!
     );
+
+    const tasks = result.tasks.map((task) => Task.mapTask(task));
+
     res.status(200).json({
-        tasks: result.tasks,
+        tasks: tasks.map((task) => task.asDto()),
         nextCursor: result.nextCursor
             ? encodeBase64(result.nextCursor.toISOString())
             : null,
@@ -28,24 +32,45 @@ export const getAllTasks = async (req: Request, res: Response) => {
 };
 
 export const getTask = async (req: Request, res: Response) => {
-    const task = await repository.getTask(
+    const taskData = await repository.getTask(
         req.params.id,
         req.auth!.payload.sub!
     );
-    res.status(200).json({ task });
+
+    const task = Task.mapTask(taskData);
+
+    res.status(200).json({ task: task.asDto() });
+};
+
+export const markTaskAsCompleted = async (req: Request, res: Response) => {
+    const userId = req.auth!.payload.sub!;
+
+    const taskData = await repository.getTask(req.params.id, userId);
+
+    const task = Task.mapTask(taskData);
+
+    task.markAsCompleted();
+
+    await repository.updateTask(req.params.id, task, userId);
+
+    res.status(200).json({ task: task.asDto() });
 };
 
 export const createTask = async (req: Request, res: Response) => {
     const createTaskUseCase = new CreateTaskUseCase(req, mailer);
     const task = await createTaskUseCase.execute();
-    res.status(201).json({ task });
+
+    res.status(201).json({ task: task.asDto() });
 };
 
 export const updateTask = async (req: Request, res: Response) => {
-    const task = await repository.updateTask(
+    const taskData = await repository.updateTask(
         req.params.id,
         req.body,
         req.auth!.payload.sub!
     );
-    res.status(200).json({ task });
+
+    const task = Task.mapTask(taskData);
+
+    res.status(200).json({ task: task.asDto() });
 };
