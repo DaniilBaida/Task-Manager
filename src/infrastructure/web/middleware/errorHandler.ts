@@ -50,6 +50,13 @@ export const errorHandler = (
         });
         return;
     }
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        const prismaError = new PrismaError(error);
+        res.status(prismaError.statusCode).json({
+            error: { message: prismaError.message, code: prismaError.code },
+        });
+        return;
+    }
 
     res.status(500).json({
         error: {

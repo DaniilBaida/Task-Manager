@@ -9,7 +9,6 @@ import {
     ITaskUpdatePayload,
 } from "./types";
 import EntityNotFoundError from "@/shared/errors/EntityNotFoundError";
-import TaskError from "@/shared/errors/TaskError";
 
 type PrismaTask = Prisma.TaskGetPayload<{}>;
 
@@ -73,11 +72,7 @@ export function TaskRepository<TBase extends Constructor<BaseRepository>>(
                 },
             });
             if (!task) {
-                throw new EntityNotFoundError({
-                    message: `Task with ID '${id}' not found`,
-                    statusCode: 404,
-                    code: "ERR_NF",
-                });
+                throw new EntityNotFoundError("Task", id);
             }
             return this.mapTask(task);
         }
@@ -107,11 +102,7 @@ export function TaskRepository<TBase extends Constructor<BaseRepository>>(
             });
 
             if (!existingTask) {
-                throw new EntityNotFoundError({
-                    message: `Task with ID '${id}' not found`,
-                    statusCode: 404,
-                    code: "ERR_NF",
-                });
+                throw new EntityNotFoundError("Task", id);
             }
 
             const task = await this.client.task.update({
