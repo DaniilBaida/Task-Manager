@@ -1,6 +1,6 @@
 import "module-alias/register";
 
-import config from "@/config/config";
+import config from "@/shared/config/config";
 import { createServer } from "@/server";
 
 const server = createServer();

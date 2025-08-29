@@ -14,7 +14,7 @@
         "migration:create": "prisma migrate dev --create-only",
         "migrate": "prisma migrate deploy",
         "db:seed": "prisma db seed",
-        "get-token": "dotenv -- tsc src/get-token.ts --outDir dist && node dist/get-token.js"
+        "get-token": "dotenv -- tsc src/infrastructure/external/auth/get-token.ts --outDir dist --skipLibCheck && node dist/get-token.js"
     },
     "keywords": [],
     "author": "",
