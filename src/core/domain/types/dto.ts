@@ -8,3 +8,10 @@ export type TaskDTO = {
     completed_on: Date | null;
     priority_level: "high" | "low" | null;
 };
+
+export type ProjectDTO = {
+    id: string;
+    user_id: string;
+    name: string;
+    description: string | null;
+};
