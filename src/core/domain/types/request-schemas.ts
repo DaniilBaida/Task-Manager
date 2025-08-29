@@ -32,24 +32,27 @@ const taskSchema = z.object({
         .optional(),
 });
 
-export const createTaskSchema = taskSchema;
+export const createTaskSchema = taskSchema.strict();
 
-export const updateTaskSchema = taskSchema.partial().refine(
-    (data) => {
-        const allowedFields = [
-            "project_id",
-            "name",
-            "description",
-            "due_date",
-            "completed_on",
-        ];
-        return Object.keys(data).some((key) => allowedFields.includes(key));
-    },
-    {
-        message:
-            "At least one field must be provided for update. Valid fields: project_id, name, description, due_date, completed_on.",
-    }
-);
+export const updateTaskSchema = taskSchema
+    .partial()
+    .strict()
+    .refine(
+        (data) => {
+            const allowedFields = [
+                "project_id",
+                "name",
+                "description",
+                "due_date",
+                "completed_on",
+            ];
+            return Object.keys(data).some((key) => allowedFields.includes(key));
+        },
+        {
+            message:
+                "At least one field must be provided for update. Valid fields: project_id, name, description, due_date, completed_on.",
+        }
+    );
 
 const projectSchema = z.object({
     name: z
@@ -64,15 +67,18 @@ const projectSchema = z.object({
         .optional(),
 });
 
-export const createProjectSchema = projectSchema;
+export const createProjectSchema = projectSchema.strict();
 
-export const updateProjectSchema = projectSchema.partial().refine(
-    (data) => {
-        const allowedFields = ["name", "description"];
-        return Object.keys(data).some((key) => allowedFields.includes(key));
-    },
-    {
-        message:
-            "At least one field must be provided for update. Valid fields: name, description.",
-    }
-);
+export const updateProjectSchema = projectSchema
+    .partial()
+    .strict()
+    .refine(
+        (data) => {
+            const allowedFields = ["name", "description"];
+            return Object.keys(data).some((key) => allowedFields.includes(key));
+        },
+        {
+            message:
+                "At least one field must be provided for update. Valid fields: name, description.",
+        }
+    );

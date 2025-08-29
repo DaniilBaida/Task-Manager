@@ -34,10 +34,21 @@ export function TaskRepository<TBase extends Constructor<BaseRepository>>(
         ): Promise<ITaskQueryResult> {
             const { limit, sortOrder, operator, cursor } =
                 this.getPaginationQueryParameters(query);
+            const projectId = query.projectId;
+
+            if (projectId !== undefined) {
+                const project = await this.client.project.findUnique({
+                    where: { id: projectId, user_id: userId },
+                });
+
+                if (!project) {
+                    throw new EntityNotFoundError("Project", projectId);
+                }
+            }
 
             const where: Prisma.TaskWhereInput = {
                 user_id: userId,
-                project_id: query.projectId,
+                project_id: projectId,
                 created_at: { [operator]: cursor },
                 name: { contains: query.search, mode: "insensitive" },
             };

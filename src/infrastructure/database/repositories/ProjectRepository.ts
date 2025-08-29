@@ -65,11 +65,7 @@ export function ProjectRepository<TBase extends Constructor<BaseRepository>>(
             });
 
             if (!project) {
-                throw new EntityNotFoundError({
-                    message: "Project not found",
-                    statusCode: 404,
-                    code: "ERR_NF",
-                });
+                throw new EntityNotFoundError("Project", id);
             }
             return this.mapProject(project);
         }
@@ -90,6 +86,14 @@ export function ProjectRepository<TBase extends Constructor<BaseRepository>>(
             payload: IProjectUpdatePayload,
             userId: string
         ): Promise<IProject> {
+            const existingProject = await this.client.project.findUnique({
+                where: { id, user_id: userId },
+            });
+
+            if (!existingProject) {
+                throw new EntityNotFoundError("Project", id);
+            }
+
             const project = await this.client.project.update({
                 where: { id, user_id: userId },
                 data: { ...payload },
