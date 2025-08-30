@@ -1,11 +1,9 @@
 import { Task } from "@/core/domain/entities/Task";
-import { repository } from "@/infrastructure/database/repositories";
 import { mailer } from "@/core/services/notification";
 import { taskService } from "@/core/services/task";
 
 import { CreateTaskUseCase } from "@/core/use-cases/task/CreateTaskUseCase";
 import {
-    encodeBase64,
     getPaginationParameters,
     parseTaskQueryParameters,
 } from "@/shared/utils";

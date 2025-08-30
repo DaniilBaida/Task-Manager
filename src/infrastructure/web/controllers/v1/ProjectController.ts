@@ -1,6 +1,7 @@
+import { projectService } from "@/core/services/projects";
+import { taskService } from "@/core/services/task";
 import { repository } from "@/infrastructure/database/repositories";
 import {
-    encodeBase64,
     getPaginationParameters,
     parseProjectQueryParameters,
 } from "@/shared/utils";
@@ -10,23 +11,23 @@ export const getAllProjects = async (req: Request, res: Response) => {
     const { limit, nextCursor, prevCursor } = getPaginationParameters(req);
     const queryParameters = parseProjectQueryParameters(req);
 
-    const result = await repository.getAllProjects(
-        { limit, nextCursor, prevCursor, ...queryParameters },
+    const result = await projectService.getAllProjects(
+        limit,
+        nextCursor,
+        prevCursor,
+        queryParameters,
         req.auth!.payload.sub!
     );
+
     res.status(200).json({
         projects: result.projects,
-        nextCursor: result.nextCursor
-            ? encodeBase64(result.nextCursor.toISOString())
-            : null,
-        prevCursor: result.prevCursor
-            ? encodeBase64(result.prevCursor.toISOString())
-            : null,
+        nextCursor: result.nextCursor,
+        prevCursor: result.prevCursor,
     });
 };
 
 export const getProject = async (req: Request, res: Response) => {
-    const project = await repository.getProject(
+    const project = await projectService.getProject(
         req.params.id,
         req.auth!.payload.sub!
     );
@@ -35,33 +36,31 @@ export const getProject = async (req: Request, res: Response) => {
 
 export const getAllProjectTasks = async (req: Request, res: Response) => {
     const { limit, nextCursor, prevCursor } = getPaginationParameters(req);
-    const result = await repository.getAllTasks(
-        { projectId: req.params.id, limit, nextCursor, prevCursor },
+    const result = await taskService.getAllTasks(
+        limit,
+        nextCursor,
+        prevCursor,
+        { projectId: req.params.id },
         req.auth!.payload.sub!
     );
 
     res.status(200).json({
         tasks: result.tasks,
-        nextCursor: result.nextCursor
-            ? encodeBase64(result.nextCursor.toISOString())
-            : null,
-        prevCursor: result.prevCursor
-            ? encodeBase64(result.prevCursor.toISOString())
-            : null,
+        nextCursor: result.nextCursor,
+        prevCursor: result.prevCursor,
     });
 };
 
 export const createProject = async (req: Request, res: Response) => {
-    const project = await repository.createProject(
+    const project = await projectService.createProject(
         req.body,
-        req.params.id,
         req.auth!.payload.sub!
     );
     res.status(201).json({ project });
 };
 
 export const updateProject = async (req: Request, res: Response) => {
-    const project = await repository.updateProject(
+    const project = await projectService.updateProject(
         req.params.id,
         req.body,
         req.auth!.payload.sub!

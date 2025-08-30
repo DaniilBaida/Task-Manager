@@ -71,11 +71,10 @@ export function ProjectRepository<TBase extends Constructor<BaseRepository>>(
         }
         async createProject(
             payload: IProjectCreatePayload,
-            id: string,
             userId: string
         ): Promise<IProject> {
             const project = await this.client.project.create({
-                data: { id, user_id: userId, ...payload },
+                data: { user_id: userId, ...payload },
             });
 
             return this.mapProject(project);

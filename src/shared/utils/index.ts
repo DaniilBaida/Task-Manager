@@ -48,6 +48,10 @@ export function decodeBase64(input: string) {
     return Buffer.from(input, "base64").toString("utf-8");
 }
 
+export function encodeCursor(date: Date | null): string | null {
+    return date ? encodeBase64(date.toISOString()) : null;
+}
+
 export function parseTaskQueryParameters(req: Request): ITaskQueryParameters {
     const {
         search,

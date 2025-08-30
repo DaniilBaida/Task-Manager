@@ -6,14 +6,10 @@ import {
     ITaskQueryParameters,
     ITaskUpdatePayload,
 } from "@/infrastructure/database/repositories/types";
-import { encodeBase64 } from "@/shared/utils";
+import { encodeBase64, encodeCursor } from "@/shared/utils";
 import { ITaskService } from "./types";
 
 export class TaskService implements ITaskService {
-    private encodeCursor(date: Date | null): string | null {
-        return date ? encodeBase64(date.toISOString()) : null;
-    }
-
     async getAllTasks(
         limit: number | undefined,
         nextCursor: string | undefined,
@@ -28,8 +24,8 @@ export class TaskService implements ITaskService {
 
         return {
             tasks: result.tasks.map((task: ITask) => Task.mapTask(task)),
-            nextCursor: this.encodeCursor(result.nextCursor),
-            prevCursor: this.encodeCursor(result.prevCursor),
+            nextCursor: encodeCursor(result.nextCursor),
+            prevCursor: encodeCursor(result.prevCursor),
         };
     }
 
