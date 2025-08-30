@@ -6,7 +6,7 @@ import {
     ITaskQueryParameters,
     ITaskUpdatePayload,
 } from "@/infrastructure/database/repositories/types";
-import { encodeBase64, encodeCursor } from "@/shared/utils";
+import { encodeCursor } from "@/shared/utils";
 import { ITaskService } from "./types";
 
 export class TaskService implements ITaskService {

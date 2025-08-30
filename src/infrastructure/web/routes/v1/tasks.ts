@@ -8,7 +8,10 @@ import {
 } from "@/infrastructure/web/controllers/v1/TaskController";
 import authenticateUser from "@/infrastructure/web/middleware/authenticate-user";
 import validateRequest from "@/infrastructure/web/middleware/validate-request";
-import { createTaskSchema, updateTaskSchema } from "@/core/domain/types/request-schemas";
+import {
+    createTaskSchema,
+    updateTaskSchema,
+} from "@/core/domain/types/request-schemas";
 
 const tasks: Router = Router();
 

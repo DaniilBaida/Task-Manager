@@ -1,5 +1,4 @@
 import { Project } from "@/core/domain/entities/Project";
-import { Task } from "@/core/domain/entities/Task";
 import {
     IProjectCreatePayload,
     IProjectQueryParameters,
