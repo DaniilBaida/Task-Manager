@@ -46,7 +46,7 @@ describe("Task", () => {
         });
 
         it("throws error when task is already completed", () => {
-            task.completed_on = new Date("2023-12-01");
+            task.markAsCompleted();
 
             expect(() => task.markAsCompleted()).toThrow(TaskError);
         });
@@ -87,6 +87,53 @@ describe("Task", () => {
             task.due_date = yesterday;
 
             expect(task.priorityLevel).toBe("high");
+        });
+    });
+
+    describe("mapTask", () => {
+        it("creates Task instance from ITask data with all properties", () => {
+            const taskData = {
+                id: "mapped-task",
+                user_id: "user-2",
+                project_id: "project-2",
+                name: "Mapped Task",
+                description: "Mapped Description",
+                due_date: new Date(),
+                completed_on: new Date(),
+                created_at: new Date(),
+            };
+
+            const mappedTask = Task.mapTask(taskData);
+
+            expect(mappedTask).toBeInstanceOf(Task);
+            expect(mappedTask.id).toBe(taskData.id);
+            expect(mappedTask.user_id).toBe(taskData.user_id);
+            expect(mappedTask.project_id).toBe(taskData.project_id);
+            expect(mappedTask.name).toBe(taskData.name);
+            expect(mappedTask.description).toBe(taskData.description);
+            expect(mappedTask.due_date).toBe(taskData.due_date);
+            expect(mappedTask.completed_on).toBe(taskData.completed_on);
+            expect(mappedTask.created_at).toBe(taskData.created_at);
+        });
+
+        it("creates Task instance with null values", () => {
+            const taskData = {
+                id: "task-null",
+                user_id: "user-1",
+                project_id: null,
+                name: "Task Name",
+                description: null,
+                due_date: null,
+                completed_on: null,
+                created_at: new Date(),
+            };
+
+            const mappedTask = Task.mapTask(taskData);
+
+            expect(mappedTask.project_id).toBeNull();
+            expect(mappedTask.description).toBeNull();
+            expect(mappedTask.due_date).toBeNull();
+            expect(mappedTask.completed_on).toBeNull();
         });
     });
 });
