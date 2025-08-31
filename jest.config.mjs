@@ -11,7 +11,7 @@ export default {
     transform: {
         "^.+\\.ts?$": "ts-jest",
     },
-    testRegex: "(/.*tests.*.*(\\.|/)(test|spec))\\.ts?$",
+    testRegex: "(/tests/.*|(\\.|/)(test|spec))\\.ts?$",
     moduleFileExtensions: ["ts", "js", "json", "node"],
     modulePaths: [compilerOptions.baseUrl],
     moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {

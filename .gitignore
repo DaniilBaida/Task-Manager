@@ -5,3 +5,4 @@ logs
 api-test.http
 dist
 get-token.ts
+coverage
